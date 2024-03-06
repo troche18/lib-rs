@@ -4,28 +4,28 @@ fn ceil_pow2(n: u32) -> u32 {
     32 - n.saturating_sub(1).leading_zeros()
 }
 
-impl<M: Monoid> Default for SparseTable<M> {
+impl<M: Monoid> Default for DisjointSparseTable<M> {
     fn default() -> Self {
-        SparseTable::new(0)
+        DisjointSparseTable::new(0)
     }
 }
-impl<M: Monoid> SparseTable<M> {
-    pub fn new(n: usize) -> SparseTable<M> {
+impl<M: Monoid> DisjointSparseTable<M> {
+    pub fn new(n: usize) -> DisjointSparseTable<M> {
         vec![M::identity(); n].into()
     }
 }
-impl<M: Monoid> From<Vec<M::S>> for SparseTable<M> {
+impl<M: Monoid> From<Vec<M::S>> for DisjointSparseTable<M> {
     fn from(v: Vec<M::S>) -> Self {
         let n = v.len();
         let log = ceil_pow2(n as u32) as usize;
         let table = vec![vec![M::identity();1<<log];log];
         let fact = vec![0;n+1];
-        let mut st = SparseTable {n,log, fact,table,  };
+        let mut st = DisjointSparseTable {n,log, fact,table,  };
         st.init(&v);
         st
     }
 }
-impl<M: Monoid> SparseTable<M> {
+impl<M: Monoid> DisjointSparseTable<M> {
     fn init(&mut self,v:&Vec<M::S>){
         for i in 0..self.n {
             self.table[self.log-1][i] = v[i].clone();
@@ -52,7 +52,7 @@ impl<M: Monoid> SparseTable<M> {
     }
 }
 
-pub struct SparseTable<M>
+pub struct DisjointSparseTable<M>
 where
     M:Monoid,
 {
